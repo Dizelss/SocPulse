@@ -8,8 +8,8 @@ class TgChannels(db.Model):
     channel_name = db.Column(db.String, nullable=False)
     subscribers_count = db.Column(db.Integer, nullable=False)
     category = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DataTime, nullable=False)
-    updated_at = db.Column(db.DataTime, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+    updated_at = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
         return f"{self.channel_name}: подписчиков {self.subscribers_count}, категория {self.category}"
