@@ -1,29 +1,47 @@
 from telethon import functions
 from datetime import datetime
+from sqlalchemy.orm import sessionmaker
 
-from .model import db, TgChannels
+from spider.models import db, TgChannels
+from spider.settings import engine
 
 
-# Сделать функцию update_channel_info(channel_id),
-# которая получает про канал всю нужную информацию
-# и создает или обновляет соответствующую запись в БД
-def update_channel_info(client, channel_username):
+def get_channel_info(client, channel_username):
     result = client(functions.channels.GetFullChannelRequest(channel=channel_username))
     channel_id = result.full_chat.id
     channel_name = channel_username
     subscribers_count = result.full_chat.participants_count
-    channel_category = "1"
+    category = ""
     created_at = datetime.now()
     updated_at = datetime.now()
 
-    channel_new = TgChannels(
-        channel_id=channel_id,
-        channel_name=channel_name,
-        subscribers_count=subscribers_count,
-        category=channel_category,
-        created_at=created_at,
-        updated_at=updated_at
-    )
-    print(channel_new)
-    db.session.add(channel_new)
-    db.session.commit()
+    result_channel_info = {
+        "channel_id": channel_id,
+        "channel_name": channel_name,
+        "subscribers_count": subscribers_count,
+        "category": category,
+        "created_at": created_at,
+        "updated_at": updated_at
+    }
+    update_channel_info(result_channel_info)
+
+def update_channel_info(result_channel_info):
+    db.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    try:
+        edited_tg_channel = session.query(TgChannels).filter_by(channel_id=result_channel_info["channel_id"]).one()
+        edited_tg_channel.category = "перезаписали категорию"
+        edited_tg_channel.updated_at = datetime.now()
+        session.add(edited_tg_channel)
+    except:
+        new_tg_channel = TgChannels(
+            channel_id=result_channel_info["channel_id"],
+            channel_name=result_channel_info["channel_name"],
+            subscribers_count=result_channel_info["subscribers_count"],
+            category=result_channel_info["category"],
+            created_at=result_channel_info["created_at"],
+            updated_at=result_channel_info["updated_at"]
+        )
+        session.add(new_tg_channel)
+    session.commit()
