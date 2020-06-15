@@ -1,4 +1,6 @@
-from spider.model import db
-from spider.__main__ import start_spider
+from sqlalchemy import create_engine
+from spider.models import db
 
-db.create_all(app=start_spider())
+
+engine = create_engine("sqlite:///socpulse_tg.db")
+db.metadata.create_all(engine)

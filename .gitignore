@@ -1,5 +1,5 @@
 spider/settings.py
-
+*.db
 socpulce_tg.session
 .DS_Store
 .idea/
