@@ -1,9 +1,7 @@
 from telethon import functions
 from datetime import datetime
-from sqlalchemy.orm import sessionmaker
 
-from spider.models import db, TgChannels
-from spider.settings import engine
+from spider.models import TgChannels
 
 
 def get_channel_info(client, channel_username):
@@ -23,25 +21,15 @@ def get_channel_info(client, channel_username):
         "created_at": created_at,
         "updated_at": updated_at
     }
-    update_channel_info(result_channel_info)
+    return result_channel_info
 
-def update_channel_info(result_channel_info):
-    db.metadata.bind = engine
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
+def update_channel_info(result_channel_info, session):
     try:
         edited_tg_channel = session.query(TgChannels).filter_by(channel_id=result_channel_info["channel_id"]).one()
         edited_tg_channel.category = "перезаписали категорию"
         edited_tg_channel.updated_at = datetime.now()
         session.add(edited_tg_channel)
     except:
-        new_tg_channel = TgChannels(
-            channel_id=result_channel_info["channel_id"],
-            channel_name=result_channel_info["channel_name"],
-            subscribers_count=result_channel_info["subscribers_count"],
-            category=result_channel_info["category"],
-            created_at=result_channel_info["created_at"],
-            updated_at=result_channel_info["updated_at"]
-        )
+        new_tg_channel = TgChannels(**result_channel_info)
         session.add(new_tg_channel)
     session.commit()
