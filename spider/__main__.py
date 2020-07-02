@@ -14,9 +14,10 @@ def start_spider():
     db.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
+    return client, session
 
-    result_info_channel = get_channel_info(client, "FINASCOP")
-    update_channel_info(result_info_channel, session)
-    get_all_messages(client, "pythonist_ru")
 
-start_spider()
+start = start_spider()
+result_info_channel = get_channel_info(start[0], "zloyinvestor")
+update_channel_info(result_info_channel, start[1])
+get_all_messages(start[0], "pythonist_ru")
