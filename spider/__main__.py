@@ -4,8 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from .settings import API_ID, API_HASH, engine
 from .channel_info import get_channel_info, update_channel_info
 from .channel_posts import get_all_messages
-from spider.models import db
-from spider.producer_tasks import spider_name
+from .models import db
+from .producer_tasks import spider_name
+from .celery_app import app
 
 
 def start_spider():

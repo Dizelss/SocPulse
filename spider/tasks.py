@@ -1,9 +1,5 @@
-from celery import Celery
-
-from spider.channel_info import get_channel_info, update_channel_info
-
-
-app = Celery('tasks', backend='amqp', broker='pyamqp://guest@localhost:5672//')
+from .celery_app import app
+from .channel_info import get_channel_info, update_channel_info
 
 
 @app.task(name="tg_names_to_analyze")
