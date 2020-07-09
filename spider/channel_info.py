@@ -1,7 +1,7 @@
 from telethon import functions
 from datetime import datetime
 
-from spider.models import TgChannels
+from .models import TgChannels
 
 
 def get_channel_info(client, channel_username):
