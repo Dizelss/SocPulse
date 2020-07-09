@@ -19,7 +19,7 @@ def start_spider():
 
 
 start = start_spider()
-spider_name()
+spider_name("bitkogan", start[0], start[1])
 print("Завершено")
 
 # result_info_channel = get_channel_info(start[0], "zloyinvestor")
