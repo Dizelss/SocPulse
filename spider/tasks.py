@@ -26,6 +26,6 @@ globalStartSession = start_spider_session()
 @app.task(name="tg_names_to_analyze")
 def tg_names_to_analyze(tg_name):
     result = "0"
-    # result_info_channel = get_channel_info(globalStartClient, tg_name)
-    # update_channel_info(result_info_channel, globalStartSession)
+    result_info_channel = get_channel_info(globalStartClient, tg_name)
+    update_channel_info(result_info_channel, globalStartSession)
     return result
